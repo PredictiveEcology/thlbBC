@@ -12,7 +12,7 @@ defineModule(sim, list(
   citation = list(),
   documentation = list(),
   reqdPkgs = list("SpaDES.core", "bcdata", "data.table", "reproducible", "sf", "terra",
-                  "PredictiveEcology/timberSupply@main"),
+                  "PredictiveEcology/timberSupply@development (>= 0.0.0.9001)"),
   parameters = bindrows(
     defineParameter("age", "integer", 160L, 1L, NA,
                     "Stand age at which the yield-table biomass is compared with `minB`."),
