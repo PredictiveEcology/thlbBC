@@ -1,0 +1,73 @@
+---
+title: "thlbBC Manual"
+date: "Last updated: 2026-10-21"
+output:
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    number_sections: false
+    df_print: paged
+    keep_md: yes
+editor_options:
+  chunk_output_type: console
+always_allow_html: true
+---
+
+
+
+**Authors:** Eliot McIntire. Module and documentation are work in progress.
+
+# Overview
+
+*thlbBC* makes the timber harvesting land base (THLB) for a study area in British Columbia:
+the pixels where harvest can happen. It produces `thlb`, which *simpleHarvestPlanning* uses.
+
+- Where BC publishes an official THLB (Timber Supply Areas, and the Tree Farm Licences in
+  `availableTFLs`), a pixel is in the THLB if its THLB fraction is at least `minFraction`.
+- Elsewhere the THLB is derived from the LandR yield curves: a pixel is harvestable if its
+  curve's total biomass (all species) reaches `minB` by `age`. The default, 6000 g/m2 by age
+  160, is about 100 m3/ha, the low-productivity rule of the 100 Mile House TSA Timber Supply
+  Review (2024).
+
+The calculations are in the *timberSupply* package (`timberSupply::thlbBC()`); this module
+runs them once, at `init`, and writes `thlb.tif` to the output path.
+
+# Inputs
+
+| Object | Class | Description |
+|---|---|---|
+| `rasterToMatch` | `SpatRaster` | Template raster of the study area. |
+| `yieldTablesCumulative` | `data.table` | Yield curves (`yieldTableIndex`, `age`, `speciesCode`, `biomass` g/m2), from *Biomass_yieldTables*. |
+| `yieldTablesId` | `data.table` | `pixelIndex` to `yieldTableIndex`, from *Biomass_yieldTables*. |
+
+# Outputs
+
+| Object | Class | Description |
+|---|---|---|
+| `thlb` | `SpatRaster` | 1 = harvestable, NA = not. |
+
+# Parameters
+
+| Parameter | Default | Description |
+|---|---|---|
+| `age` | 160 | Stand age at which the yield-curve biomass is compared with `minB`. |
+| `minB` | 6000 | Total biomass (g/m2) a curve must reach by `age` to be harvestable. |
+| `minFraction` | 0.5 | Official THLB: a pixel is in the THLB if its THLB fraction is at least this. |
+| `availableTFLs` | TFL1, 3, 19, 23, 26, 30, 38, 41, 49, 58, 60 | Tree Farm Licences with a published THLB; other TFLs use the derived THLB. |
+
+# Usage
+
+
+``` r
+library(SpaDES.core)
+sim <- simInit(
+  times = list(start = 2020, end = 2020),
+  modules = "thlbBC",
+  params = list(thlbBC = list(age = 160L, minB = 6000)),
+  objects = list(rasterToMatch = rasterToMatch,
+                 yieldTablesCumulative = yieldTablesCumulative,
+                 yieldTablesId = yieldTablesId))
+sim <- spades(sim)
+sim$thlb
+```
