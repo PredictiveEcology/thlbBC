@@ -1,6 +1,6 @@
 ---
 title: "thlbBC Manual"
-date: "Last updated: 2026-10-21"
+date: "Last updated: 2026-11-05"
 output:
   bookdown::html_document2:
     toc: true
