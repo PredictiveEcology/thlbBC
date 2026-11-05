@@ -11,7 +11,7 @@ defineModule(sim, list(
   timeunit = "year",
   citation = list(),
   documentation = list(),
-  reqdPkgs = list("SpaDES.core", "bcdata", "data.table", "reproducible", "sf", "terra",
+  reqdPkgs = list("SpaDES.core", "bcdata", "data.table", "httr2", "reproducible", "sf", "terra",
                   "PredictiveEcology/timberSupply@development (>= 0.0.0.9001)"),
   parameters = bindrows(
     defineParameter("age", "integer", 160L, 1L, NA,
